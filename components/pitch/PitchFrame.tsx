@@ -64,7 +64,7 @@ export function PitchFrame({
   return (
     <div className="w-full px-6 py-8">
       {/* Top chrome: mode pills + nav */}
-      <div className="mx-auto w-full max-w-[1600px] flex items-center justify-between gap-4">
+      <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <Pill tone="neutral">PITCH</Pill>
           <Pill tone={mode === "investor" ? "good" : "neutral"}>
@@ -74,7 +74,7 @@ export function PitchFrame({
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Prev */}
+          {/* Prev (no disabled prop; wrapper simulates disabled) */}
           <div className={isFirst ? "pointer-events-none opacity-40" : ""}>
             <Button
               variant="ghost"
@@ -87,7 +87,7 @@ export function PitchFrame({
             </Button>
           </div>
 
-          {/* Next */}
+          {/* Next (no disabled prop; wrapper simulates disabled) */}
           <div className={isLast ? "pointer-events-none opacity-40" : ""}>
             <Button
               onClick={() => {
@@ -102,26 +102,30 @@ export function PitchFrame({
       </div>
 
       {/* Slide stage */}
-      <div className="mx-auto w-full max-w-[1600px] mt-6">
+      <div className="mx-auto mt-6 w-full max-w-[1600px]">
         <div className="evz-stage-wrap">
-          <div className={`evz-slide ${theme === "dark" ? "evz-dark" : "evz-light"}`}>
+          <div
+            className={`evz-slide ${
+              theme === "dark" ? "evz-dark" : "evz-light"
+            }`}
+          >
             {/* Header inside slide (ppt-like) */}
             <div className="evz-slide-top">
               <div className="flex items-start gap-3">
                 <img
                   src="/assets/logo.png"
                   alt="EcoVeraZ"
-                  className={`h-7 w-auto mt-0.5 ${
+                  className={`mt-0.5 h-7 w-auto ${
                     theme === "dark" ? "evz-logo-dark" : "evz-logo-light"
                   }`}
                 />
                 <div className="min-w-0">
                   <div className="text-xs font-mono text-sub">{kicker}</div>
-                  <div className="mt-1 text-2xl md:text-3xl font-semibold text-ink leading-tight">
+                  <div className="mt-1 text-2xl font-semibold leading-tight text-ink md:text-3xl">
                     {headline}
                   </div>
                   {subtitle ? (
-                    <div className="mt-1 text-sm md:text-base text-sub">
+                    <div className="mt-1 text-sm text-sub md:text-base">
                       {subtitle}
                     </div>
                   ) : null}
@@ -153,7 +157,7 @@ export function PitchFrame({
             {/* Progress bar */}
             <div className="evz-slide-bottom">
               <div
-                className={`h-2 w-full rounded-full overflow-hidden ${
+                className={`h-2 w-full overflow-hidden rounded-full ${
                   theme === "dark" ? "bg-white/10" : "bg-ink/5"
                 }`}
               >
@@ -163,7 +167,7 @@ export function PitchFrame({
                 />
               </div>
               <div
-                className={`mt-2 text-xs flex justify-between ${
+                className={`mt-2 flex justify-between text-xs ${
                   theme === "dark" ? "text-white/70" : "text-sub"
                 }`}
               >
