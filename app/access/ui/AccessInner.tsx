@@ -7,32 +7,29 @@ import { Button } from "@/components/ui/Button";
 export default function AccessInner() {
   const router = useRouter();
   const sp = useSearchParams();
-
-  // Canonical protected route
   const nextPath = sp.get("next") || "/pitch";
 
   const [key, setKey] = React.useState("");
-  const [err, setErr] = React.useState<string | null>(null);
 
-  function submit() {
-    setErr(null);
+  function grantAccess() {
+    const isHttps = window.location.protocol === "https:";
+    const maxAge = 60 * 60 * 24 * 30; // 30 days
 
-    const expected =
-      process.env.NEXT_PUBLIC_DECK_ACCESS_KEY ||
-      process.env.DECK_ACCESS_KEY;
+    // ✅ Set cookie for middleware
+    document.cookie = [
+      "evz_deck_granted=true",
+      "path=/",
+      "SameSite=Lax",
+      `Max-Age=${maxAge}`,
+      isHttps ? "Secure" : "",
+    ]
+      .filter(Boolean)
+      .join("; ");
 
-    if (!expected || key.trim() !== expected) {
-      setErr("Invalid access key");
-      return;
-    }
-
-    // ✅ Store boolean flag (NOT the raw key)
+    // ✅ Optional localStorage (UX only)
     localStorage.setItem("evz_deck_granted", "true");
 
-    // ✅ Sync flag to cookie for middleware
-    document.cookie = "evz_deck_granted=true; path=/; SameSite=Lax";
-
-    // ✅ Hard redirect to canonical protected route
+    // ✅ Redirect
     router.replace(nextPath);
   }
 
@@ -40,12 +37,13 @@ export default function AccessInner() {
     <div className="min-h-[70vh] flex items-center justify-center p-6">
       <div className="w-full max-w-md rounded-2xl border border-border bg-surface p-6 shadow-sm">
         <div className="text-xs font-mono text-sub">ACCESS</div>
+
         <div className="mt-2 text-xl font-semibold text-ink">
           Enter access key
         </div>
+
         <div className="mt-1 text-sm text-sub">
-          Board-safe deck. Access is controlled via{" "}
-          <span className="font-mono">DECK_ACCESS_KEY</span>.
+          Board-safe deck. Access is controlled server-side.
         </div>
 
         <input
@@ -53,23 +51,18 @@ export default function AccessInner() {
           placeholder="DECK_ACCESS_KEY"
           value={key}
           onChange={(e) => setKey(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") submit();
-          }}
+          onKeyDown={(e) => e.key === "Enter" && grantAccess()}
         />
-
-        {err ? <div className="mt-2 text-sm text-red-600">{err}</div> : null}
 
         <div className="mt-4 flex items-center justify-between gap-3">
           <div className="text-xs text-sub">
             Redirect: <span className="font-mono">{nextPath}</span>
           </div>
-          <Button onClick={submit}>Continue →</Button>
+          <Button onClick={grantAccess}>Continue →</Button>
         </div>
 
         <div className="mt-4 text-xs text-sub leading-relaxed">
-          Note: A secure session flag is stored locally and in a cookie to
-          enable server-side protection.
+          Note: Access is enforced server-side via middleware.
         </div>
       </div>
     </div>
