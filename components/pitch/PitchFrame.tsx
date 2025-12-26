@@ -30,6 +30,9 @@ export function PitchFrame({
 }) {
   const progress = Math.round(((index + 1) / total) * 100);
 
+  const isFirst = index === 0;
+  const isLast = index === total - 1;
+
   // Keyboard navigation (avoid hijacking when user is typing/dragging inputs)
   React.useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -43,8 +46,12 @@ export function PitchFrame({
 
       if (isEditable) return;
 
-      if (e.key === "ArrowLeft") onPrev();
-      if (e.key === "ArrowRight") onNext();
+      if (e.key === "ArrowLeft") {
+        if (!isFirst) onPrev();
+      }
+      if (e.key === "ArrowRight") {
+        if (!isLast) onNext();
+      }
       if (e.key === "Escape") {
         // noop placeholder; keeps UX parity
       }
@@ -52,7 +59,7 @@ export function PitchFrame({
 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [onPrev, onNext]);
+  }, [onPrev, onNext, isFirst, isLast]);
 
   return (
     <div className="w-full px-6 py-8">
@@ -67,12 +74,30 @@ export function PitchFrame({
         </div>
 
         <div className="flex items-center gap-3">
-          <Button variant="ghost" onClick={onPrev} disabled={index === 0}>
-            ← Prev
-          </Button>
-          <Button onClick={onNext} disabled={index === total - 1}>
-            Next →
-          </Button>
+          {/* Prev */}
+          <div className={isFirst ? "pointer-events-none opacity-40" : ""}>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                if (isFirst) return;
+                onPrev();
+              }}
+            >
+              ← Prev
+            </Button>
+          </div>
+
+          {/* Next */}
+          <div className={isLast ? "pointer-events-none opacity-40" : ""}>
+            <Button
+              onClick={() => {
+                if (isLast) return;
+                onNext();
+              }}
+            >
+              Next →
+            </Button>
+          </div>
         </div>
       </div>
 
