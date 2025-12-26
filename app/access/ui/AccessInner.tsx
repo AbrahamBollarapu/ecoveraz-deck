@@ -8,7 +8,7 @@ export default function AccessInner() {
   const router = useRouter();
   const sp = useSearchParams();
 
-  // If you already have a different param name, change here:
+  // Canonical protected route
   const nextPath = sp.get("next") || "/pitch";
 
   const [key, setKey] = React.useState("");
@@ -17,21 +17,35 @@ export default function AccessInner() {
   function submit() {
     setErr(null);
 
-    // store in localStorage (matches your “app-level gate” pattern)
-    // If your gate reads a different storage key, update it here too.
-    localStorage.setItem("EVZ_DECK_ACCESS_KEY", key.trim());
+    const expected =
+      process.env.NEXT_PUBLIC_DECK_ACCESS_KEY ||
+      process.env.DECK_ACCESS_KEY;
 
-    // Navigate
-    router.push(nextPath);
+    if (!expected || key.trim() !== expected) {
+      setErr("Invalid access key");
+      return;
+    }
+
+    // ✅ Store boolean flag (NOT the raw key)
+    localStorage.setItem("evz_deck_granted", "true");
+
+    // ✅ Sync flag to cookie for middleware
+    document.cookie = "evz_deck_granted=true; path=/; SameSite=Lax";
+
+    // ✅ Hard redirect to canonical protected route
+    router.replace(nextPath);
   }
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center p-6">
       <div className="w-full max-w-md rounded-2xl border border-border bg-surface p-6 shadow-sm">
         <div className="text-xs font-mono text-sub">ACCESS</div>
-        <div className="mt-2 text-xl font-semibold text-ink">Enter access key</div>
+        <div className="mt-2 text-xl font-semibold text-ink">
+          Enter access key
+        </div>
         <div className="mt-1 text-sm text-sub">
-          Board-safe deck. Access is controlled via <span className="font-mono">DECK_ACCESS_KEY</span>.
+          Board-safe deck. Access is controlled via{" "}
+          <span className="font-mono">DECK_ACCESS_KEY</span>.
         </div>
 
         <input
@@ -54,8 +68,8 @@ export default function AccessInner() {
         </div>
 
         <div className="mt-4 text-xs text-sub leading-relaxed">
-          Note: This stores a local key in your browser. If you want “hard” protection, we’ll also
-          enforce the gate server-side via middleware (next step).
+          Note: A secure session flag is stored locally and in a cookie to
+          enable server-side protection.
         </div>
       </div>
     </div>
