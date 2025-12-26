@@ -6,17 +6,20 @@ import { motion } from "framer-motion";
 type Kicker = { label: string; value: string };
 
 export function Slide1Cover() {
-  const baseSensorTruth = "From Sensor Truth to Blockchain Verification";
+  const mobileHeadline = "Operational measurements → audit-ready evidence";
+  const tabletHeadline = "Audit-Grade ESG Infrastructure";
+
+  const subline =
+    "Turning real-world operational data into verifiable, regulator-grade proof.";
 
   const kickers: Kicker[] = [
-    { label: "PoC", value: "Ramky Tech Park" },
-    { label: "Site", value: "SITE-001" },
-    { label: "Status", value: "Live telemetry + audit pack" },
+    { label: "Deployment", value: "Enterprise-ready" },
+    { label: "Scope", value: "Multi-site ESG" },
+    { label: "Status", value: "Live telemetry + audit packs" },
   ];
 
   return (
     <div className="h-full w-full">
-      {/* HERO */}
       <div className="h-full w-full flex flex-col justify-between">
         {/* Upper headline area */}
         <div className="mt-2">
@@ -30,16 +33,21 @@ export function Slide1Cover() {
               EcoVeraZ — Investor Pitch
             </div>
 
-            <div className="mt-3 text-4xl md:text-5xl font-semibold leading-tight text-white">
-              Audit-Grade ESG Infrastructure
+            {/* Mobile headline */}
+            <div className="mt-3 block md:hidden text-[22px] font-semibold leading-snug text-white">
+              {mobileHeadline}
             </div>
 
-            <div className="mt-2 text-sm md:text-base text-white/75">
-              {baseSensorTruth}
+            {/* Tablet headline */}
+            <div className="mt-3 hidden md:block text-5xl font-semibold leading-tight text-white">
+              {tabletHeadline}
+            </div>
+
+            <div className="mt-2 text-sm md:text-base text-white/75 max-w-[720px]">
+              {subline}
             </div>
           </motion.div>
 
-          {/* Divider */}
           <div className="mt-6 h-px w-full bg-white/10" />
         </div>
 
@@ -71,7 +79,6 @@ export function Slide1Cover() {
             ))}
           </div>
 
-          {/* Tiny footer note */}
           <div className="mt-4 flex items-center justify-between text-[11px] text-white/55">
             <span className="font-mono">
               contact@ecoveraz.com • www.ecoveraz.com

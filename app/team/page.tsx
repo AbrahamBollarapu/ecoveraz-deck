@@ -12,16 +12,18 @@ const EXEC_TEAM: Person[] = [
     name: "Abraham Bollarapu",
     role: "Founder & CEO",
     focus: [
-      "Evidence-first product execution",
-      "Systems delivery + entrepreneurship",
-      "45 years across engineering (mechanical, instrumentation, software)",
+      "Strategy & Leadership",
+      "Vision & Execution",
+      "Governance",
     ],
     note: "PLACEHOLDER — headshot",
   },
   {
     name: "Dr Evzen Thoendel",
-    role: "Chief Technical Officer",
-    focus: ["Architecture + defensibility", "R&D + standards alignment", "Audit-grade evidence systems"],
+    role: "Co-Founder & CTO",
+    focus: ["Technology & Integrity",
+      "R&D + standards alignment",
+      "Audit-grade evidence systems"],
     note: "PLACEHOLDER — headshot",
   },
   {

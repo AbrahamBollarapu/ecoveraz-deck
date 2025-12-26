@@ -132,7 +132,7 @@ body {
   height: var(--evz-header-h);
   padding: var(--evz-pad-top) var(--evz-pad-x) 10px var(--evz-pad-x);
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
   border-bottom: 1px solid var(--evz-line);

@@ -8,102 +8,144 @@ type DemoMode = "investor" | "regulator" | "developer";
 
 export function Slide8Arr({ mode }: { mode: DemoMode }) {
   return (
-    <div className="grid h-full min-w-0 gap-4 md:grid-cols-12">
-      {/* LEFT — ARR OUTCOME */}
-      <Card
-        className="md:col-span-7 h-full min-w-0"
-        title="Path to $2M ARR (18 months)"
-        desc="Infrastructure-style revenue with repeatable deployment."
-      >
-        <div className="mt-6 space-y-4">
-          {/* BASE CASE */}
-          <Tile tone="bg-bg">
-            <div className="text-xs font-mono text-sub">BASE CASE</div>
-            <div className="mt-2 text-3xl font-semibold">$2.0M ARR</div>
-            <div className="mt-2 text-sm text-sub leading-snug">
-              Achieved through multi-site expansion within early enterprise customers using a
-              standard rollout playbook.
-            </div>
-          </Tile>
-
-          {/* BANDS */}
-          <div className="grid gap-3 md:grid-cols-2">
-            <Tile tone="bg-bg">
-              <div className="text-xs font-mono text-sub">DOWNSIDE</div>
-              <div className="mt-2 text-2xl font-semibold">$1.2–1.4M ARR</div>
-              <div className="mt-2 text-sm text-sub leading-snug">
-                Slower enterprise rollout or delayed compliance adoption; still viable due to
-                subscription + certification revenue mix.
-              </div>
-            </Tile>
-
-            <Tile tone="bg-bg">
-              <div className="text-xs font-mono text-sub">UPSIDE</div>
-              <div className="mt-2 text-2xl font-semibold">$2.8–3.2M ARR</div>
-              <div className="mt-2 text-sm text-sub leading-snug">
-                Faster multi-site expansion and pull-through from compliance and certification
-                demand.
-              </div>
-            </Tile>
+    <div className="h-full w-full min-w-0">
+      {/* MOBILE: compress outcome + bands + 2 assumptions */}
+      <div className="block md:hidden space-y-4">
+        <div className="rounded-2xl border border-line bg-bg p-4">
+          <div className="text-xs font-mono text-sub">ARR TARGET</div>
+          <div className="mt-2 text-2xl font-semibold text-ink">Path to $2M ARR (18 months)</div>
+          <div className="mt-2 text-sm text-sub leading-snug">
+            Infrastructure-style revenue with repeatable deployment.
           </div>
         </div>
-      </Card>
 
-      {/* RIGHT — ASSUMPTIONS + PROOF */}
-      <div className="md:col-span-5 h-full min-w-0 grid gap-3">
-        {/* ASSUMPTIONS */}
+        <div className="rounded-2xl border border-line bg-bg p-4">
+          <div className="text-xs font-mono text-sub">BASE CASE</div>
+          <div className="mt-2 text-3xl font-semibold text-ink">$2.0M ARR</div>
+          <div className="mt-2 text-sm text-sub leading-snug">
+            Multi-site expansion within early enterprise customers using a standard rollout playbook.
+          </div>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="rounded-2xl border border-line bg-bg p-4">
+            <div className="text-xs font-mono text-sub">DOWNSIDE</div>
+            <div className="mt-2 text-2xl font-semibold text-ink">$1.2–1.4M</div>
+            <div className="mt-1 text-sm text-sub leading-snug">
+              Slower rollout or delayed adoption; still viable via subscription + certification mix.
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-line bg-bg p-4">
+            <div className="text-xs font-mono text-sub">UPSIDE</div>
+            <div className="mt-2 text-2xl font-semibold text-ink">$2.8–3.2M</div>
+            <div className="mt-1 text-sm text-sub leading-snug">
+              Faster site expansion and pull-through from compliance & certification demand.
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-line bg-bg p-4">
+          <div className="text-xs font-mono text-sub">MODEL INTEGRITY</div>
+          <div className="mt-2 text-sm text-sub leading-snug">
+            Bands come from sensitivity analysis across customer count, site expansion, and deployment timing.
+          </div>
+          <div className="mt-3 text-xs text-sub leading-snug">
+            SIMULATED • ASSUMPTION-DRIVEN • BOARD-REVIEWABLE
+          </div>
+        </div>
+      </div>
+
+      {/* TABLET/DESKTOP: keep your existing 12-col layout */}
+      <div className="hidden md:grid h-full min-w-0 gap-4 md:grid-cols-12">
+        {/* LEFT — ARR OUTCOME */}
         <Card
-          className="min-w-0"
-          title="Core assumptions"
-          desc="Explicit and reviewable."
+          className="md:col-span-7 h-full min-w-0"
+          title="Path to $2M ARR (18 months)"
+          desc="Infrastructure-style revenue with repeatable deployment."
         >
-          <Tile tone="bg-bg">
-            <div className="text-xs font-mono text-sub">Commercial model</div>
-            <div className="mt-2 text-sm text-sub leading-snug">
-              Per-site subscription + compliance artifacts (certification / evidence packs).
-            </div>
-          </Tile>
+          <div className="mt-6 space-y-4">
+            {/* BASE CASE */}
+            <Tile tone="bg-bg">
+              <div className="text-xs font-mono text-sub">BASE CASE</div>
+              <div className="mt-2 text-3xl font-semibold">$2.0M ARR</div>
+              <div className="mt-2 text-sm text-sub leading-snug">
+                Achieved through multi-site expansion within early enterprise customers using a
+                standard rollout playbook.
+              </div>
+            </Tile>
 
-          <Tile tone="bg-bg">
-            <div className="text-xs font-mono text-sub">Deployment</div>
-            <div className="mt-2 text-sm text-sub leading-snug">
-              Standardized rollout across facilities with repeatable instrumentation and analytics.
-            </div>
-          </Tile>
+            {/* BANDS */}
+            <div className="grid gap-3 md:grid-cols-2">
+              <Tile tone="bg-bg">
+                <div className="text-xs font-mono text-sub">DOWNSIDE</div>
+                <div className="mt-2 text-2xl font-semibold">$1.2–1.4M ARR</div>
+                <div className="mt-2 text-sm text-sub leading-snug">
+                  Slower enterprise rollout or delayed compliance adoption; still viable due to
+                  subscription + certification revenue mix.
+                </div>
+              </Tile>
 
-          <Tile tone="bg-bg">
-            <div className="text-xs font-mono text-sub">Expansion</div>
-            <div className="mt-2 text-sm text-sub leading-snug">
-              Land-and-expand driven by regulatory scope increase and audit frequency.
+              <Tile tone="bg-bg">
+                <div className="text-xs font-mono text-sub">UPSIDE</div>
+                <div className="mt-2 text-2xl font-semibold">$2.8–3.2M ARR</div>
+                <div className="mt-2 text-sm text-sub leading-snug">
+                  Faster multi-site expansion and pull-through from compliance and certification
+                  demand.
+                </div>
+              </Tile>
             </div>
-          </Tile>
+          </div>
         </Card>
 
-        {/* PROOF / MONTE CARLO */}
-        <Card
-          className="min-w-0"
-          title="Model integrity"
-          desc="Why this is not a vanity projection."
-        >
-          <Tile tone="bg-surface">
-            <div className="text-xs font-mono text-sub">MONTE CARLO MODEL</div>
-            <div className="mt-2 text-sm text-sub leading-snug">
-              ARR bands are derived from sensitivity analysis across customer count, site expansion,
-              and deployment timing.
-            </div>
-            <div className="mt-3 text-xs text-sub leading-snug">
-              SIMULATED • ASSUMPTION-DRIVEN • BOARD-REVIEWABLE
-            </div>
-          </Tile>
+        {/* RIGHT — ASSUMPTIONS + PROOF */}
+        <div className="md:col-span-5 h-full min-w-0 grid gap-3">
+          {/* ASSUMPTIONS */}
+          <Card className="min-w-0" title="Core assumptions" desc="Explicit and reviewable.">
+            <Tile tone="bg-bg">
+              <div className="text-xs font-mono text-sub">Commercial model</div>
+              <div className="mt-2 text-sm text-sub leading-snug">
+                Per-site subscription + compliance artifacts (certification / evidence packs).
+              </div>
+            </Tile>
 
-          <Tile tone="bg-bg">
-            <div className="text-xs font-mono text-sub">Board takeaway</div>
-            <div className="mt-2 text-sm text-sub leading-snug">
-              This is an infrastructure growth curve with downside protection and asymmetric
-              upside — not a single-deal revenue bet.
-            </div>
-          </Tile>
-        </Card>
+            <Tile tone="bg-bg">
+              <div className="text-xs font-mono text-sub">Deployment</div>
+              <div className="mt-2 text-sm text-sub leading-snug">
+                Standardized rollout across facilities with repeatable instrumentation and analytics.
+              </div>
+            </Tile>
+
+            <Tile tone="bg-bg">
+              <div className="text-xs font-mono text-sub">Expansion</div>
+              <div className="mt-2 text-sm text-sub leading-snug">
+                Land-and-expand driven by regulatory scope increase and audit frequency.
+              </div>
+            </Tile>
+          </Card>
+
+          {/* PROOF / MONTE CARLO */}
+          <Card className="min-w-0" title="Model integrity" desc="Why this is not a vanity projection.">
+            <Tile tone="bg-surface">
+              <div className="text-xs font-mono text-sub">MONTE CARLO MODEL</div>
+              <div className="mt-2 text-sm text-sub leading-snug">
+                ARR bands are derived from sensitivity analysis across customer count, site expansion,
+                and deployment timing.
+              </div>
+              <div className="mt-3 text-xs text-sub leading-snug">
+                SIMULATED • ASSUMPTION-DRIVEN • BOARD-REVIEWABLE
+              </div>
+            </Tile>
+
+            <Tile tone="bg-bg">
+              <div className="text-xs font-mono text-sub">Board takeaway</div>
+              <div className="mt-2 text-sm text-sub leading-snug">
+                This is an infrastructure growth curve with downside protection and asymmetric
+                upside — not a single-deal revenue bet.
+              </div>
+            </Tile>
+          </Card>
+        </div>
       </div>
     </div>
   );

@@ -111,32 +111,44 @@ export function PitchFrame({
           >
             {/* Header inside slide (ppt-like) */}
             <div className="evz-slide-top">
-              <div className="flex items-start gap-3">
-                <img
-                  src="/assets/logo.png"
-                  alt="EcoVeraZ"
-                  className={`mt-0.5 h-7 w-auto ${
-                    theme === "dark" ? "evz-logo-dark" : "evz-logo-light"
-                  }`}
-                />
-                <div className="min-w-0">
-                  <div className="text-xs font-mono text-sub">{kicker}</div>
-                  <div className="mt-1 text-2xl font-semibold leading-tight text-ink md:text-3xl">
-                    {headline}
+              <div className="flex w-full items-center justify-between gap-4">
+                {/* Brand + slide type */}
+                <div className="flex min-w-0 items-center gap-3">
+                  <img
+                    src="/assets/logo.png"
+                    alt="EcoVeraZ"
+                    className={`h-9 w-auto ${
+                      theme === "dark" ? "evz-logo-dark" : "evz-logo-light"
+                    }`}
+                  />
+                  <div className="flex min-w-0 items-center gap-2">
+                    <span
+                      className={`text-sm font-semibold tracking-tight ${
+                        theme === "dark" ? "text-white/90" : "text-ink"
+                      }`}
+                    >
+                      {kicker}
+                    </span>
                   </div>
-                  {subtitle ? (
-                    <div className="mt-1 text-sm text-sub md:text-base">
-                      {subtitle}
-                    </div>
-                  ) : null}
                 </div>
-              </div>
 
-              <div className="text-right">
-                <div className="text-xs text-sub">Slide</div>
-                <div className="mt-1 text-sm font-mono text-ink">
-                  {String(index + 1).padStart(2, "0")} /{" "}
-                  {String(total).padStart(2, "0")}
+                {/* Slide counter */}
+                <div className="text-right">
+                  <div
+                    className={`text-xs ${
+                      theme === "dark" ? "text-white/60" : "text-sub"
+                    }`}
+                  >
+                    Slide
+                  </div>
+                  <div
+                    className={`mt-0.5 text-sm font-mono ${
+                      theme === "dark" ? "text-white/85" : "text-ink"
+                    }`}
+                  >
+                    {String(index + 1).padStart(2, "0")} /{" "}
+                    {String(total).padStart(2, "0")}
+                  </div>
                 </div>
               </div>
             </div>
