@@ -1,29 +1,51 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+const COOKIE_NAME = "evz_deck_key";
 
-  // 🔒 Only protect /pitch (and subroutes)
-  if (!pathname.startsWith("/pitch")) {
-    return NextResponse.next();
+function isPublicPath(pathname: string) {
+  // Always allow Next internals + static assets
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/favicon") ||
+    pathname.startsWith("/robots.txt") ||
+    pathname.startsWith("/sitemap") ||
+    pathname.startsWith("/assets") ||
+    pathname.startsWith("/images")
+  ) {
+    return true;
   }
 
-  // ✅ Check cookie set by AccessInner
-  const hasAccess =
-    req.cookies.get("evz_deck_granted")?.value === "true";
-
-  if (!hasAccess) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/access";
-    url.searchParams.set("next", pathname);
-    return NextResponse.redirect(url);
+  // Allow the access screen + any future access API endpoints
+  if (pathname === "/access" || pathname.startsWith("/api/access")) {
+    return true;
   }
 
-  return NextResponse.next();
+  return false;
 }
 
-// Optional but recommended matcher
+export function middleware(req: NextRequest) {
+  const pathname = req.nextUrl.pathname;
+
+  if (isPublicPath(pathname)) return NextResponse.next();
+
+  const required = process.env.DECK_ACCESS_KEY;
+
+  // If no key is configured, do NOT block (safe fallback for dev)
+  if (!required) return NextResponse.next();
+
+  const cookie = req.cookies.get(COOKIE_NAME)?.value;
+
+  // ✅ Cookie must match the configured key
+  if (cookie && cookie === required) return NextResponse.next();
+
+  // Otherwise bounce to /access with "next"
+  const url = req.nextUrl.clone();
+  url.pathname = "/access";
+  url.searchParams.set("next", pathname + (req.nextUrl.search || ""));
+  return NextResponse.redirect(url);
+}
+
 export const config = {
-  matcher: ["/pitch/:path*"],
+  // Run on all routes except Next internals handled above
+  matcher: ["/((?!_next/static|_next/image).*)"],
 };
