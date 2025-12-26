@@ -2,182 +2,213 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { color-scheme: light; }
-html, body { height: 100%; }
-body { background: #FFFFFF; color: #0B1220; }
-::selection { background: rgba(10,124,114,0.20); }
+/* =========================================================
+   EcoVeraZ Pitch Deck — Global Styles
+   - Strict "slide stage" sizing like Datadog decks
+   - Light/Dark slide themes
+   - Overflow-safe content box
+========================================================= */
 
-/* Subtle animated background (safe CSS, not WebGL) */
-.evz-hero-bg {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  background:
-    radial-gradient(1200px 600px at 15% 10%, rgba(10,124,114,0.14), transparent 55%),
-    radial-gradient(900px 520px at 85% 20%, rgba(26,54,93,0.10), transparent 55%),
-    radial-gradient(1000px 700px at 50% 100%, rgba(221,107,32,0.06), transparent 55%),
-    linear-gradient(180deg, rgba(0,0,0,0.00) 0%, rgba(0,0,0,0.02) 100%);
-}
-.evz-dots {
-  position: absolute;
-  inset: -40px;
-  background-image: radial-gradient(rgba(11,18,32,0.10) 1px, transparent 1px);
-  background-size: 22px 22px;
-  opacity: 0.35;
-  animation: drift 18s linear infinite;
-  transform: translate3d(0,0,0);
-}
-@keyframes drift {
-  0% { transform: translate3d(0px, 0px, 0); }
-  100% { transform: translate3d(80px, 40px, 0); }
-}
+/* Base typography */
+:root {
+  --evz-bg: #f6f7f9;
+  --evz-ink: #0b1220;
+  --evz-sub: #5a667a;
+  --evz-line: rgba(11, 18, 32, 0.08);
 
-/* Concentric circle helper for TAM/SAM/SOM */
-.evz-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  border: 2px solid rgba(11,18,32,0.10);
-}
+  --evz-dark-bg: #070b13;
+  --evz-dark-ink: rgba(255, 255, 255, 0.95);
+  --evz-dark-sub: rgba(255, 255, 255, 0.7);
+  --evz-dark-line: rgba(255, 255, 255, 0.1);
 
-/* Dark-slide helpers (Cover + Closing) */
-.evz-dark {
-  color: rgba(248,250,252,0.95);
-  background: #000814;
-}
-.evz-dark .muted { color: rgba(148,163,184,0.95); }
-.evz-gridlines {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(to right, rgba(248,250,252,0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(248,250,252,0.05) 1px, transparent 1px);
-  background-size: 56px 56px;
-  opacity: 0.35;
-  mask-image: radial-gradient(closest-side at 55% 35%, rgba(0,0,0,1), rgba(0,0,0,0));
-}
-@keyframes evzFloat {
-  0% { transform: translate3d(0,0,0); }
-  50% { transform: translate3d(0,-10px,0); }
-  100% { transform: translate3d(0,0,0); }
-}
-@keyframes evzPulseBar {
-  0% { opacity: 0.55; }
-  50% { opacity: 1; }
-  100% { opacity: 0.55; }
-}
-@keyframes evzType {
-  from { width: 0; }
-  to { width: 100%; }
-}
-@keyframes evzLockSpin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-@keyframes evzRing {
-  0% { transform: translate(-50%,-50%) scale(1); opacity: 1; }
-  100% { transform: translate(-50%,-50%) scale(3); opacity: 0; }
+  --evz-green: #0a7c72;
+  --evz-blue: #1a365d;
+  --evz-orange: #dd6b20;
+
+  --evz-radius: 14px;
+  --evz-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+  --evz-shadow-soft: 0 10px 24px rgba(0, 0, 0, 0.1);
+
+  /* Slide canvas: 16:9 */
+  --evz-slide-w: 1280px;
+  --evz-slide-h: 720px;
+
+  /* Padding grid */
+  --evz-pad-x: 44px;
+  --evz-pad-top: 32px;
+  --evz-pad-bottom: 18px;
+
+  /* Header */
+  --evz-header-h: 92px;
+  --evz-footer-h: 44px;
 }
 
-/* PPTX-like fullscreen stage (16:9) — fits viewport, no truncation */
-.evz-stage-wrap{
-  width: min(96vw, calc((100vh - 260px) * 16 / 9));
-  height: min(calc(96vw * 9 / 16), calc(100vh - 260px));
-  margin: 0 auto;
-}
-
-.evz-slide{
-  width: 100%;
+/* Basic resets */
+html,
+body {
   height: 100%;
-  position: relative;
-  border-radius: 22px;
-  overflow: hidden;
-  box-shadow:
-    0 22px 80px rgba(2, 6, 23, 0.10),
-    0 6px 20px rgba(2, 6, 23, 0.10);
+  background: var(--evz-bg);
 }
 
-/* Light/dark slide shells */
-.evz-light{ background: var(--surface); color: var(--ink); }
-.evz-dark{ background: #000814; color: rgba(248,250,252,0.95); }
+body {
+  color: var(--evz-ink);
+}
 
-/* Ppt-like internal layout */
-.evz-slide-top{
+/* Utility tokens to match Tailwind names used in components */
+.text-ink {
+  color: var(--evz-ink);
+}
+.text-sub {
+  color: var(--evz-sub);
+}
+.bg-evz-green {
+  background: var(--evz-green);
+}
+.bg-evz-blue {
+  background: var(--evz-blue);
+}
+.bg-evz-orange {
+  background: var(--evz-orange);
+}
+
+/* Slide stage wrapper */
+.evz-stage-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* =========================================================
+   IMPORTANT CONTRACT (STABLE RECOVERY POINT)
+   PitchFrame manages layout — do NOT absolute children.
+========================================================= */
+.evz-slide {
+  width: min(100%, var(--evz-slide-w));
+  aspect-ratio: 16 / 9;
+  border-radius: var(--evz-radius);
+  box-shadow: var(--evz-shadow);
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--evz-line);
+  background: #ffffff;
+  color: var(--evz-ink);
+}
+
+/* Disable the old padding-top sizing shim */
+.evz-slide::before {
+  content: none;
+  display: none;
+}
+
+/* Critical fix: do NOT force all children absolute */
+.evz-slide > * {
+  position: static;
+  inset: auto;
+}
+
+/* Slide themes */
+.evz-light {
+  background: #ffffff;
+  color: var(--evz-ink);
+  border-color: var(--evz-line);
+}
+.evz-dark {
+  background: radial-gradient(
+      1200px 600px at 10% 0%,
+      rgba(10, 124, 114, 0.28),
+      rgba(7, 11, 19, 0.94)
+    ),
+    radial-gradient(
+      900px 500px at 85% 20%,
+      rgba(26, 54, 93, 0.18),
+      rgba(7, 11, 19, 0.96)
+    );
+  color: var(--evz-dark-ink);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Header + footer internal chrome */
+.evz-slide-top {
+  height: var(--evz-header-h);
+  padding: var(--evz-pad-top) var(--evz-pad-x) 10px var(--evz-pad-x);
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  padding: 22px 26px 0 26px;
+  border-bottom: 1px solid var(--evz-line);
 }
 
-/* Content area: reserve room for footer sources */
-.evz-slide-body{
-  height: calc(100% - 132px);
-  padding: 18px 26px;
-  padding-bottom: 44px; /* ✅ reserve space so absolute .evz-sources doesn't overlap content */
-  overflow: hidden;
-  display: flex;
-  min-width: 0;
+.evz-dark .evz-slide-top {
+  border-bottom-color: var(--evz-dark-line);
 }
 
-.evz-slide-body > *{
-  height: 100%;
-  width: 100%;
-  min-width: 0;
-  overflow: auto;           /* allow internal scroll instead of truncation */
-  scrollbar-width: thin;
-}
-
-.evz-slide-body .grid{ min-width: 0; }
-
-.evz-slide-bottom{
+.evz-slide-body {
   position: absolute;
+  top: var(--evz-header-h);
+  bottom: var(--evz-footer-h);
+  left: 0;
+  right: 0;
+  padding: 26px var(--evz-pad-x);
+}
+
+.evz-slide-bottom {
+  position: absolute;
+  height: var(--evz-footer-h);
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 0 26px 18px 26px;
+  padding: 10px var(--evz-pad-x);
+  border-top: 1px solid var(--evz-line);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(10px);
 }
 
-/* Subtle premium grain */
-.evz-slide:before{
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E");
-  mix-blend-mode: multiply;
+.evz-dark .evz-slide-bottom {
+  border-top-color: var(--evz-dark-line);
+  background: rgba(7, 11, 19, 0.45);
 }
 
-/* When viewport is short, keep it usable */
-@media (max-height: 820px){
-  .evz-stage-wrap{
-    width: min(96vw, calc((100vh - 220px) * 16 / 9));
-    height: min(calc(96vw * 9 / 16), calc(100vh - 220px));
-  }
-  .evz-slide-top{ padding-top: 18px; }
+.evz-logo-dark {
+  filter: brightness(1.05) saturate(1.05);
+}
+.evz-logo-light {
+  filter: none;
 }
 
-/* Force dark text-sub (user preference: no light grey) */
-.text-sub{ color: rgba(15, 23, 42, 0.92) !important; }
-/* ✅ But on dark slides, we must override for readability */
-.evz-dark .text-sub{ color: rgba(248,250,252,0.82) !important; }
-
-/* Logo tone per slide theme */
-.evz-logo-dark { filter: brightness(0) invert(1); opacity: 0.95; }
-.evz-logo-light { filter: none; opacity: 0.95; }
-
-/* Evidence sources footnote */
-.evz-sources{
-  position: absolute;
-  left: 26px;
-  right: 26px;
-  bottom: 14px;
-  font-size: 11px;
-  line-height: 1.2;
-  color: rgba(15, 23, 42, 0.92);
-  opacity: 0.92;
+/* Make motion containers not overflow the slide body */
+.evz-slide-body > * {
+  min-width: 0;
+  min-height: 0;
 }
-.evz-dark .evz-sources{
-  color: rgba(248,250,252,0.82);
+
+/* Simple "ppt card" helpers (optional) */
+.evz-card {
+  border-radius: 12px;
+  border: 1px solid var(--evz-line);
+  background: #ffffff;
+  box-shadow: var(--evz-shadow-soft);
+}
+
+.evz-dark .evz-card {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: none;
+}
+
+/* Prevent gigantic accidental SVG/text from overflowing */
+svg,
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(10, 124, 114, 0.24);
+}
+
+/* Optional: smoother text */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
