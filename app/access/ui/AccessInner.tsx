@@ -1,109 +1,91 @@
 "use client";
 
 import * as React from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/Button";
+import { useSearchParams } from "next/navigation";
 
-const LS_KEY = "EVZ_DECK_ACCESS_KEY";
 const COOKIE_NAME = "evz_deck_key";
-const MAX_AGE_DAYS = 30;
+
+// 1 year
+const MAX_AGE = 60 * 60 * 24 * 365;
 
 function setCookie(name: string, value: string) {
-  const maxAge = MAX_AGE_DAYS * 24 * 60 * 60; // seconds
-  // SameSite=Lax works well for typical navigation
-  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; samesite=lax; max-age=${maxAge}`;
+  // HTTPS site -> Safe to set Secure.
+  // SameSite=Lax is fine for normal navigation.
+  document.cookie = `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=${MAX_AGE}; SameSite=Lax; Secure`;
 }
 
 function clearCookie(name: string) {
-  document.cookie = `${name}=; path=/; samesite=lax; max-age=0`;
+  document.cookie = `${name}=; Path=/; Max-Age=0; SameSite=Lax; Secure`;
 }
 
 export default function AccessInner() {
-  const router = useRouter();
   const sp = useSearchParams();
-
-  const nextPath = sp.get("next") || "/pitch";
+  const next = sp.get("next") || "/pitch";
 
   const [key, setKey] = React.useState("");
-  const [err, setErr] = React.useState<string | null>(null);
+  const [busy, setBusy] = React.useState(false);
 
-  React.useEffect(() => {
-    // If user already tried a key before and still got redirected here,
-    // show a friendly hint (no server info needed).
-    const prev = typeof window !== "undefined" ? localStorage.getItem(LS_KEY) : null;
-    if (prev && !err) {
-      setErr("Access key was not accepted (or deployment not updated). Please re-enter the key.");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
 
-  function submit() {
-    const trimmed = key.trim();
-    setErr(null);
+    // Store the key locally; middleware validates it on the next request.
+    setCookie(COOKIE_NAME, key.trim());
 
-    if (!trimmed) {
-      setErr("Please enter the access key.");
-      return;
-    }
-
-    // 1) Store locally (your UI pattern)
-    localStorage.setItem(LS_KEY, trimmed);
-
-    // 2) ✅ Store cookie for middleware (this is the missing piece)
-    setCookie(COOKIE_NAME, trimmed);
-
-    // 3) Navigate
-    router.push(nextPath);
+    // Hard redirect so middleware runs immediately.
+    window.location.href = next;
   }
 
-  function reset() {
-    setKey("");
-    setErr(null);
-    localStorage.removeItem(LS_KEY);
+  function onClear() {
     clearCookie(COOKIE_NAME);
+    setKey("");
+    // stay on access page
   }
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center p-6">
+    <div className="flex min-h-screen items-center justify-center p-6">
       <div className="w-full max-w-md rounded-2xl border border-border bg-surface p-6 shadow-sm">
-        <div className="text-xs font-mono text-sub">ACCESS</div>
+        <div className="text-xs font-mono text-subtle">ACCESS</div>
         <div className="mt-2 text-xl font-semibold text-ink">Enter access key</div>
-        <div className="mt-1 text-sm text-sub">
+        <div className="mt-1 text-sm text-subtle">
           Board-safe deck. Access is controlled via <span className="font-mono">DECK_ACCESS_KEY</span>.
         </div>
 
-        <input
-          className="mt-4 w-full rounded-xl border border-border bg-bg px-3 py-2 text-sm outline-none"
-          placeholder="DECK_ACCESS_KEY"
-          value={key}
-          onChange={(e) => setKey(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") submit();
-          }}
-        />
+        <form className="mt-5 space-y-4" onSubmit={onSubmit}>
+          <input
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+            placeholder="DECK_ACCESS_KEY"
+            className="w-full rounded-xl border border-border bg-bg px-3 py-2 text-sm outline-none"
+            autoFocus
+          />
 
-        {err ? <div className="mt-2 text-sm text-red-600">{err}</div> : null}
+          <div className="flex items-center justify-between gap-3">
+            <div className="text-xs text-subtle">
+              Redirect: <span className="font-mono">{next}</span>
+            </div>
 
-        <div className="mt-4 flex items-center justify-between gap-3">
-          <div className="text-xs text-sub">
-            Redirect: <span className="font-mono">{nextPath}</span>
-          </div>
-          <div className="flex items-center gap-2">
             <button
-              type="button"
-              onClick={reset}
-              className="text-xs text-sub underline underline-offset-4"
+              type="submit"
+              disabled={busy || key.trim().length === 0}
+              className="rounded-xl bg-accent px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
             >
-              Reset
+              Continue →
             </button>
-            <Button onClick={submit}>Continue →</Button>
           </div>
-        </div>
 
-        <div className="mt-4 text-xs text-sub leading-relaxed">
-          Note: This stores a local key and a cookie in your browser. Middleware uses the cookie to
-          allow protected routes.
-        </div>
+          <div className="text-xs text-subtle leading-relaxed">
+            Note: This stores a local key in your browser. If the key is wrong, you’ll be redirected back here.
+          </div>
+
+          <button
+            type="button"
+            onClick={onClear}
+            className="text-xs text-subtle underline underline-offset-4 hover:text-ink"
+          >
+            Clear stored key
+          </button>
+        </form>
       </div>
     </div>
   );

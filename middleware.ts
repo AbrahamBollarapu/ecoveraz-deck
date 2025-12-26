@@ -1,51 +1,52 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 const COOKIE_NAME = "evz_deck_key";
 
 function isPublicPath(pathname: string) {
-  // Always allow Next internals + static assets
-  if (
+  return (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
     pathname.startsWith("/robots.txt") ||
     pathname.startsWith("/sitemap") ||
     pathname.startsWith("/assets") ||
-    pathname.startsWith("/images")
-  ) {
-    return true;
-  }
-
-  // Allow the access screen + any future access API endpoints
-  if (pathname === "/access" || pathname.startsWith("/api/access")) {
-    return true;
-  }
-
-  return false;
+    pathname.startsWith("/images") ||
+    pathname.startsWith("/fonts")
+  );
 }
 
 export function middleware(req: NextRequest) {
-  const pathname = req.nextUrl.pathname;
+  const { pathname, search } = req.nextUrl;
 
-  if (isPublicPath(pathname)) return NextResponse.next();
+  // Always allow public assets and the access page itself
+  if (isPublicPath(pathname) || pathname === "/access") {
+    return NextResponse.next();
+  }
 
-  const required = process.env.DECK_ACCESS_KEY;
+  // Only protect /pitch (and anything under it)
+  const isProtected = pathname === "/pitch" || pathname.startsWith("/pitch/");
+  if (!isProtected) return NextResponse.next();
 
-  // If no key is configured, do NOT block (safe fallback for dev)
-  if (!required) return NextResponse.next();
+  // If no env key is configured, disable gating (useful for debugging)
+  const envKey = process.env.DECK_ACCESS_KEY;
+  if (!envKey || envKey.trim().length === 0) {
+    return NextResponse.next();
+  }
 
-  const cookie = req.cookies.get(COOKIE_NAME)?.value;
+  // Check cookie
+  const cookieVal = req.cookies.get(COOKIE_NAME)?.value ?? "";
+  const ok = cookieVal === envKey;
 
-  // ✅ Cookie must match the configured key
-  if (cookie && cookie === required) return NextResponse.next();
+  if (ok) return NextResponse.next();
 
-  // Otherwise bounce to /access with "next"
+  // Not allowed -> redirect to /access with return path
   const url = req.nextUrl.clone();
   url.pathname = "/access";
-  url.searchParams.set("next", pathname + (req.nextUrl.search || ""));
+  url.searchParams.set("next", pathname + (search || ""));
   return NextResponse.redirect(url);
 }
 
+// Run middleware for everything except static files
 export const config = {
-  // Run on all routes except Next internals handled above
-  matcher: ["/((?!_next/static|_next/image).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
